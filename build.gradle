@@ -1,0 +1,35 @@
+buildscript {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:1.0.1'
+	}
+}
+allprojects {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "eu.siacs.conversations.sharelocation"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName "0.1"
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services:6.5.87'
+}
