@@ -7,6 +7,8 @@
         <item name="TextSizeInfo">12sp</item>
         <item name="TextSizeBody">14sp</item>
         <item name="TextSizeHeadline">20sp</item>
+
+        <item name="attr/icon_copy">@drawable/ic_action_copy</item>
     </style>
 
     <style name="ConversationsActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
