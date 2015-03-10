@@ -2,9 +2,12 @@ package eu.siacs.conversations.sharelocation;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -42,10 +45,21 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.show_location, menu);
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				finish();
+				return true;
+			case R.id.action_copy_location:
+				ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("location", this.mLocation.toString());
+				clipboard.setPrimaryClip(clip);
 				return true;
 		}
 		return super.onOptionsItemSelected(item);

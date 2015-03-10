@@ -1,5 +1,6 @@
 package eu.siacs.conversations.sharelocation;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
@@ -141,6 +142,7 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 		this.mLastLocation = location;
 	}
 
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private boolean isLocationEnabledKitkat() {
 		try {
 			int locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);

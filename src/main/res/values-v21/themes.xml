@@ -10,6 +10,7 @@
         <item name="TextSizeBody">14sp</item>
         <item name="TextSizeHeadline">20sp</item>
 
+        <item name="attr/icon_copy">@drawable/ic_content_copy_white_24dp</item>
     </style>
 
 </resources>
