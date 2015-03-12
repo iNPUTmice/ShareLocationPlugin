@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="share_location_plugin">Standort-Freigabe Plugin</string>
+    <string name="share_location">Standort freigeben</string>
+    <string name="cancel">Abbruch</string>
+    <string name="share">Freigeben</string>
+    <string name="locating">Standort ermitteln&#8230;</string>
+    <string name="show_location">Standort zeigen</string>
+    <string name="location_sharing_disabled">Standort-Freigabe ist in den Einstellungen deaktiviert</string>
+    <string name="enable">Aktivieren</string>
+
+</resources>
