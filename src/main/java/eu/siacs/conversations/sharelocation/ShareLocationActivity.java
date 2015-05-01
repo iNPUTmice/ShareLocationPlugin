@@ -24,6 +24,8 @@ public class ShareLocationActivity extends Activity implements LocationListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(provider);
@@ -84,7 +86,5 @@ public class ShareLocationActivity extends Activity implements LocationListener 
     public void onProviderDisabled(String provider) {
         Toast.makeText(this, "Please enable Location",
                 Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(intent);
     }
 }
