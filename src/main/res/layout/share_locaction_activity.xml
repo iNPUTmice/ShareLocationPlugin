@@ -62,6 +62,31 @@
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_above="@+id/button_bar"
+        android:background="@drawable/snackbar"
+        android:minHeight="24dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@id/snackbar_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="24dp"
+            android:textColor="@color/ondarktext"
+            android:textSize="?attr/TextSizeBody"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/button_bar"
         android:layout_width="wrap_content"
