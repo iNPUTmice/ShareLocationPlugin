@@ -3,29 +3,22 @@ package eu.siacs.conversations.sharelocation;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.ViewById;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
 @EActivity(R.layout.share_locaction_activity)
-public class ShareLocationActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class ShareLocationActivity extends Activity implements IMyLocationConsumer {
 
-	private GoogleApiClient mGoogleApiClient;
-	private Location mLastLocation;
 	@ViewById(R.id.share_button)
 	Button mShareButton;
 	@ViewById(R.id.snackbar)
@@ -34,15 +27,12 @@ public class ShareLocationActivity extends Activity implements GoogleApiClient.C
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
 
+	GpsMyLocationProvider locationProvider;
+
 	@AfterViews
 	void init() {
+		locationProvider = new GpsMyLocationProvider(this);
 		mapFragment.showLocation(true);
-
-		mGoogleApiClient = new GoogleApiClient.Builder(this)
-				.addApi(LocationServices.API)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.build();
 	}
 
 	@Click(R.id.cancel_button)
@@ -53,12 +43,14 @@ public class ShareLocationActivity extends Activity implements GoogleApiClient.C
 
 	@Click(R.id.share_button)
 	void share() {
-		if (mLastLocation != null) {
+		Location lastLocation = locationProvider.getLastKnownLocation();
+
+		if (lastLocation != null) {
 			Intent result = new Intent();
-			result.putExtra("latitude",mLastLocation.getLatitude());
-			result.putExtra("longitude",mLastLocation.getLongitude());
-			result.putExtra("altitude",mLastLocation.getAltitude());
-			result.putExtra("accuracy",(int) mLastLocation.getAccuracy());
+			result.putExtra("latitude", lastLocation.getLatitude());
+			result.putExtra("longitude", lastLocation.getLongitude());
+			result.putExtra("altitude", lastLocation.getAltitude());
+			result.putExtra("accuracy", (int) lastLocation.getAccuracy());
 			setResult(RESULT_OK, result);
 			finish();
 		}
@@ -72,21 +64,24 @@ public class ShareLocationActivity extends Activity implements GoogleApiClient.C
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.mLastLocation = null;
+
 		if (LocationUtil.isLocationEnabled(this)) {
 			this.mSnackbar.setVisibility(View.GONE);
 		} else {
 			this.mSnackbar.setVisibility(View.VISIBLE);
 		}
+
 		mShareButton.setEnabled(false);
 		mShareButton.setTextColor(0x8a000000);
 		mShareButton.setText(R.string.locating);
-		mGoogleApiClient.connect();
+
+		locationProvider.startLocationProvider(this);
 	}
 
 	@Override
 	protected void onPause() {
-		mGoogleApiClient.disconnect();
+		locationProvider.stopLocationProvider();
+
 		super.onPause();
 	}
 
@@ -95,34 +90,10 @@ public class ShareLocationActivity extends Activity implements GoogleApiClient.C
 	}
 
 	@Override
-	public void onConnected(Bundle bundle) {
-		LocationServices.FusedLocationApi.requestLocationUpdates(
-				mGoogleApiClient,
-				LocationRequest.create()
-						.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-						.setInterval(1000),
-				this
-		);
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {
-
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		if (this.mLastLocation == null) {
-			centerOnLocation(location);
-			this.mShareButton.setEnabled(true);
-			this.mShareButton.setTextColor(0xde000000);
-			this.mShareButton.setText(R.string.share);
-		}
-		this.mLastLocation = location;
+	public void onLocationChanged(Location location, IMyLocationProvider locationProvider) {
+		centerOnLocation(location);
+		this.mShareButton.setEnabled(true);
+		this.mShareButton.setTextColor(0xde000000);
+		this.mShareButton.setText(R.string.share);
 	}
 }
