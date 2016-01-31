@@ -85,7 +85,7 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 	protected void onResume() {
 		super.onResume();
 		this.mLastLocation = null;
-		if (isLocationEnabled()) {
+		if (LocationUtil.isLocationEnabled(this)) {
 			this.mSnackbar.setVisibility(View.GONE);
 		} else {
 			this.mSnackbar.setVisibility(View.VISIBLE);
@@ -140,29 +140,5 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 			this.mShareButton.setText(R.string.share);
 		}
 		this.mLastLocation = location;
-	}
-
-	@TargetApi(Build.VERSION_CODES.KITKAT)
-	private boolean isLocationEnabledKitkat() {
-		try {
-			int locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-			return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-		} catch (Settings.SettingNotFoundException e) {
-			return false;
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean isLocationEnabledLegacy() {
-		String locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-		return !TextUtils.isEmpty(locationProviders);
-	}
-
-	private boolean isLocationEnabled() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-			return isLocationEnabledKitkat();
-		}else{
-			return isLocationEnabledLegacy();
-		}
 	}
 }
