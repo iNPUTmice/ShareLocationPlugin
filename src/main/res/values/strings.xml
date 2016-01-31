@@ -3,11 +3,17 @@
 
     <string name="share_location_plugin">Share Location Plugin</string>
     <string name="share_location">Share Location</string>
-    <string name="cancel">Cancel</string>
     <string name="share">Share</string>
     <string name="locating">Locating&#8230;</string>
     <string name="show_location">Show location</string>
-    <string name="location_sharing_disabled">Location sharing is disabled in settings</string>
     <string name="enable">Enable</string>
 
+    <string name="permission_location_reason">Your location is used to share it (if you decide to) and to show it on the map</string>
+    <string name="permission_storage_reason">The map tiles are cached on your storage</string>
+
+    <string name="show_own_location">Show my current location too</string>
+
+    <string name="about">About</string>
+
+    <string name="app_description">Plugin for Conversations to share your location</string>
 </resources>

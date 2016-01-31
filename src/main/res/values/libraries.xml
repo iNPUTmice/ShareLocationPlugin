@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation,UnusedResources">
+
+    <string name="define_androidsupportlibrary"/>
+    <!-- Author section -->
+    <string name="library_androidsupportlibrary_author">The Android Open Source Project</string>
+    <string name="library_androidsupportlibrary_authorWebsite"/>
+    <!-- Library section -->
+    <string name="library_androidsupportlibrary_libraryName">Android Support Library</string>
+    <string name="library_androidsupportlibrary_libraryDescription">The Android Support Library
+        package is a set of code libraries that provide backward-compatible versions of Android
+        framework APIs as well as features that are only available through the library APIs.
+    </string>
+    <string name="library_androidsupportlibrary_libraryWebsite">
+        https://developer.android.com/tools/support-library/index.html#overview
+    </string>
+    <string name="library_androidsupportlibrary_libraryVersion">23.1.1</string>
+    <!-- OpenSource section -->
+    <string name="library_androidsupportlibrary_isOpenSource">true</string>
+    <string name="library_androidsupportlibrary_repositoryLink">
+        https://android.googlesource.com/platform/frameworks/support
+    </string>
+    <!-- ClassPath for autoDetect section -->
+    <string name="library_androidsupportlibrary_classPath">android.support</string>
+    <!-- License section -->
+    <string name="library_androidsupportlibrary_licenseId">apache_2_0</string>
+    <!-- Custom variables section -->
+
+
+    <string name="define_osmdroid"/>
+    <!-- Author section -->
+    <string name="library_osmdroid_author">osmdroid</string>
+    <string name="library_osmdroid_authorWebsite">https://github.com/osmdroid</string>
+    <!-- Library section -->
+    <string name="library_osmdroid_libraryName">osmdroid</string>
+    <string name="library_osmdroid_libraryDescription">osmdroid is a (almost) full/free replacement for Android\'s MapView (v1 API) class.
+    </string>
+    <string name="library_osmdroid_libraryWebsite">https://github.com/osmdroid/osmdroid/blob/master/README.md</string>
+    <string name="library_osmdroid_libraryVersion">5.1</string>
+    <!-- OpenSource section -->
+    <string name="library_osmdroid_isOpenSource">true</string>
+    <string name="library_osmdroid_repositoryLink">https://github.com/osmdroid/osmdroid</string>
+    <!-- ClassPath for autoDetect section -->
+    <string name="library_osmdroid_classPath">org.osmdroid</string>
+    <!-- License section -->
+    <string name="library_osmdroid_licenseId">apache_2_0</string>
+    <!-- Custom variables section -->
+
+</resources>

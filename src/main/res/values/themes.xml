@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ConversationsTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="ConversationsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primarydark</item>
+        <item name="colorAccent">@color/accent</item>
+
         <item name="android:actionBarStyle">@style/ConversationsActionBar</item>
         <item name="android:actionBarWidgetTheme">@style/ConversationsActionBarWidget</item>
         <item name="TextSizeInfo">12sp</item>

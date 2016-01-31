@@ -1,168 +1,106 @@
 package eu.siacs.conversations.sharelocation;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.text.TextUtils;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.view.IconicsImageView;
 
-public class ShareLocationActivity extends Activity implements OnMapReadyCallback,
-		GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener,
-		LocationListener{
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
-	private GoogleMap mGoogleMap;
-	private GoogleApiClient mGoogleApiClient;
-	private LocationRequest mLocationRequest;
-	private Location mLastLocation;
-	private Button mCancelButton;
-	private Button mShareButton;
-	private RelativeLayout mSnackbar;
+@EActivity(R.layout.share_locaction_activity)
+public class ShareLocationActivity extends BaseLocationActivity {
+	private static final int SEARCHING = 0;
+	private static final int MAP = 1;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.share_locaction_activity);
-		MapFragment fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
-		fragment.getMapAsync(this);
-		mGoogleApiClient = new GoogleApiClient.Builder(this)
-				.addApi(LocationServices.API)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.build();
-		mCancelButton = (Button) findViewById(R.id.cancel_button);
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				setResult(RESULT_CANCELED);
-				finish();
-			}
+	@ViewById
+	FloatingActionButton share;
+
+	@FragmentById(R.id.map_fragment)
+	MapFragment mapFragment;
+
+	@ViewById
+	IconicsImageView icon;
+
+	@ViewById
+	Button enable;
+
+	@ViewById
+	ViewSwitcher switcher;
+
+	@AfterViews
+	void init() {
+		requirePermissions(new String[]{
+				Manifest.permission.ACCESS_FINE_LOCATION,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE
 		});
-		mShareButton = (Button) findViewById(R.id.share_button);
-		mShareButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (mLastLocation != null) {
-					Intent result = new Intent();
-					result.putExtra("latitude",mLastLocation.getLatitude());
-					result.putExtra("longitude",mLastLocation.getLongitude());
-					result.putExtra("altitude",mLastLocation.getAltitude());
-					result.putExtra("accuracy",(int) mLastLocation.getAccuracy());
-					setResult(RESULT_OK, result);
-					finish();
-				}
-			}
-		});
-		mSnackbar = (RelativeLayout) findViewById(R.id.snackbar);
-		TextView snackbarAction = (TextView) findViewById(R.id.snackbar_action);
-		snackbarAction.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-			}
-		});
+
+		mapFragment.showLocation(true);
+
+		share.setImageDrawable(
+				new IconicsDrawable(this)
+						.icon(GoogleMaterial.Icon.gmd_send)
+						.color(Color.WHITE)
+						.sizeDp(24)
+		);
+	}
+
+	@Click
+	void share() {
+		Location lastLocation = locationProvider.getLastKnownLocation();
+
+		if (lastLocation != null) {
+			Intent result = new Intent();
+			result.putExtra("latitude", lastLocation.getLatitude());
+			result.putExtra("longitude", lastLocation.getLongitude());
+			result.putExtra("altitude", lastLocation.getAltitude());
+			result.putExtra("accuracy", (int) lastLocation.getAccuracy());
+			setResult(RESULT_OK, result);
+			finish();
+		}
+	}
+
+	@Click
+	void enable() {
+		startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.mLastLocation = null;
-		if (isLocationEnabled()) {
-			this.mSnackbar.setVisibility(View.GONE);
-		} else {
-			this.mSnackbar.setVisibility(View.VISIBLE);
-		}
-		mShareButton.setEnabled(false);
-		mShareButton.setTextColor(0x8a000000);
-		mShareButton.setText(R.string.locating);
-		mGoogleApiClient.connect();
+
+		icon.setIcon(LocationUtil.isLocationEnabled(this) ? GoogleMaterial.Icon.gmd_location_searching : GoogleMaterial.Icon.gmd_location_disabled);
+		enable.setVisibility(LocationUtil.isLocationEnabled(this) ? View.GONE : View.VISIBLE);
+		switcher.setDisplayedChild(SEARCHING);
+	}
+
+	private void centerOnLocation(Location location) {
+		mapFragment.moveTo(location.getLatitude(), location.getLongitude(), Config.DEFAULT_ZOOM);
 	}
 
 	@Override
-	protected void onPause() {
-		mGoogleApiClient.disconnect();
-		super.onPause();
-	}
+	@UiThread
+	public void onLocationChanged(Location location, IMyLocationProvider locationProvider) {
+		super.onLocationChanged(location, locationProvider);
 
-	@Override
-	public void onMapReady(GoogleMap googleMap) {
-		this.mGoogleMap = googleMap;
-		this.mGoogleMap.setMyLocationEnabled(true);
-	}
+		centerOnLocation(location);
 
-	private void centerOnLocation(LatLng location) {
-		this.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, Config.DEFAULT_ZOOM));
-	}
-
-	@Override
-	public void onConnected(Bundle bundle) {
-		mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000);
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {
-
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		if (this.mLastLocation == null) {
-			centerOnLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-			this.mShareButton.setEnabled(true);
-			this.mShareButton.setTextColor(0xde000000);
-			this.mShareButton.setText(R.string.share);
-		}
-		this.mLastLocation = location;
-	}
-
-	@TargetApi(Build.VERSION_CODES.KITKAT)
-	private boolean isLocationEnabledKitkat() {
-		try {
-			int locationMode = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-			return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-		} catch (Settings.SettingNotFoundException e) {
-			return false;
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean isLocationEnabledLegacy() {
-		String locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-		return !TextUtils.isEmpty(locationProviders);
-	}
-
-	private boolean isLocationEnabled() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-			return isLocationEnabledKitkat();
-		}else{
-			return isLocationEnabledLegacy();
+		if(Permissions.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			// only show the map if we got the required permission
+			switcher.setDisplayedChild(MAP);
 		}
 	}
 }
