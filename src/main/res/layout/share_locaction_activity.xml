@@ -78,14 +78,29 @@
             android:layout_marginTop="7dp"
             android:background="@color/divider" />
 
-        <Button
-            android:id="@+id/share_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <ViewSwitcher
+            android:id="@+id/share_switcher"
             android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/share"
-            android:textColor="@color/secondarytext" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/share_button_disabled"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/locating"
+                android:textColor="@color/secondarytext" />
+
+            <Button
+                android:id="@+id/share_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/share"
+                android:textColor="@color/primarytext" />
+
+        </ViewSwitcher>
     </LinearLayout>
 </RelativeLayout>

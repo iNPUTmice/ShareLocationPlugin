@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ViewSwitcher;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -18,11 +18,13 @@ import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
 @EActivity(R.layout.share_locaction_activity)
 public class ShareLocationActivity extends Activity implements IMyLocationConsumer {
+	private static final int LOCATING = 0;
+	private static final int SHARE = 1;
 
-	@ViewById(R.id.share_button)
-	Button mShareButton;
 	@ViewById(R.id.snackbar)
 	RelativeLayout mSnackbar;
+	@ViewById
+	ViewSwitcher shareSwitcher;
 
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
@@ -71,9 +73,7 @@ public class ShareLocationActivity extends Activity implements IMyLocationConsum
 			this.mSnackbar.setVisibility(View.VISIBLE);
 		}
 
-		mShareButton.setEnabled(false);
-		mShareButton.setTextColor(0x8a000000);
-		mShareButton.setText(R.string.locating);
+		shareSwitcher.setDisplayedChild(LOCATING);
 
 		locationProvider.startLocationProvider(this);
 	}
@@ -92,8 +92,6 @@ public class ShareLocationActivity extends Activity implements IMyLocationConsum
 	@Override
 	public void onLocationChanged(Location location, IMyLocationProvider locationProvider) {
 		centerOnLocation(location);
-		this.mShareButton.setEnabled(true);
-		this.mShareButton.setTextColor(0xde000000);
-		this.mShareButton.setText(R.string.share);
+		shareSwitcher.setDisplayedChild(SHARE);
 	}
 }
