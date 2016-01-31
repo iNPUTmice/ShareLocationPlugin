@@ -10,4 +10,8 @@
     <string name="location_sharing_disabled">Standort-Freigabe ist in den Einstellungen deaktiviert</string>
     <string name="enable">Aktivieren</string>
 
+    <string name="permission_location_reason">Ihr Standort wird geteilt (wenn Sie möchten) und auf der Karte angezeigt</string>
+    <string name="permission_storage_reason">Die Karte wird auf Ihrem Gerätespeicher zwischengespeichert</string>
+
+    <string name="show_own_location">Meinen Standort auch anzeigen</string>
 </resources>

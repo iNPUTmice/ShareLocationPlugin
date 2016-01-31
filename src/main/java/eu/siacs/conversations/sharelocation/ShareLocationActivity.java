@@ -1,6 +1,6 @@
 package eu.siacs.conversations.sharelocation;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
 import android.location.Location;
 import android.view.View;
@@ -11,13 +11,12 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
 @EActivity(R.layout.share_locaction_activity)
-public class ShareLocationActivity extends Activity implements IMyLocationConsumer {
+public class ShareLocationActivity extends BaseLocationActivity {
 	private static final int LOCATING = 0;
 	private static final int SHARE = 1;
 
@@ -29,11 +28,13 @@ public class ShareLocationActivity extends Activity implements IMyLocationConsum
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
 
-	GpsMyLocationProvider locationProvider;
-
 	@AfterViews
 	void init() {
-		locationProvider = new GpsMyLocationProvider(this);
+		requirePermissions(new String[]{
+				Manifest.permission.ACCESS_FINE_LOCATION,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE
+		});
+
 		mapFragment.showLocation(true);
 	}
 
@@ -74,15 +75,6 @@ public class ShareLocationActivity extends Activity implements IMyLocationConsum
 		}
 
 		shareSwitcher.setDisplayedChild(LOCATING);
-
-		locationProvider.startLocationProvider(this);
-	}
-
-	@Override
-	protected void onPause() {
-		locationProvider.stopLocationProvider();
-
-		super.onPause();
 	}
 
 	private void centerOnLocation(Location location) {
@@ -90,7 +82,10 @@ public class ShareLocationActivity extends Activity implements IMyLocationConsum
 	}
 
 	@Override
+	@UiThread
 	public void onLocationChanged(Location location, IMyLocationProvider locationProvider) {
+		super.onLocationChanged(location, locationProvider);
+
 		centerOnLocation(location);
 		shareSwitcher.setDisplayedChild(SHARE);
 	}

@@ -10,4 +10,8 @@
     <string name="location_sharing_disabled">Location sharing is disabled in settings</string>
     <string name="enable">Enable</string>
 
+    <string name="permission_location_reason">Your location is used to share it (if you decide to) and to show it on the map</string>
+    <string name="permission_storage_reason">The map tiles are cached on your storage</string>
+
+    <string name="show_own_location">Show my current location too</string>
 </resources>
