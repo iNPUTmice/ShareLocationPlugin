@@ -7,18 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,12 +21,9 @@ import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.share_locaction_activity)
-public class ShareLocationActivity extends Activity implements OnMapReadyCallback,
-		GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener,
-		LocationListener{
+public class ShareLocationActivity extends Activity implements GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-	private GoogleMap mGoogleMap;
 	private GoogleApiClient mGoogleApiClient;
 	private Location mLastLocation;
 	@ViewById(R.id.share_button)
@@ -45,7 +36,8 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 
 	@AfterViews
 	void init() {
-		mapFragment.getMapAsync(this);
+		mapFragment.showLocation(true);
+
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addApi(LocationServices.API)
 				.addConnectionCallbacks(this)
@@ -98,14 +90,8 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 		super.onPause();
 	}
 
-	@Override
-	public void onMapReady(GoogleMap googleMap) {
-		this.mGoogleMap = googleMap;
-		this.mGoogleMap.setMyLocationEnabled(true);
-	}
-
-	private void centerOnLocation(LatLng location) {
-		this.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, Config.DEFAULT_ZOOM));
+	private void centerOnLocation(Location location) {
+		mapFragment.moveTo(location.getLatitude(), location.getLongitude(), Config.DEFAULT_ZOOM);
 	}
 
 	@Override
@@ -132,7 +118,7 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 	@Override
 	public void onLocationChanged(Location location) {
 		if (this.mLastLocation == null) {
-			centerOnLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+			centerOnLocation(location);
 			this.mShareButton.setEnabled(true);
 			this.mShareButton.setTextColor(0xde000000);
 			this.mShareButton.setText(R.string.share);

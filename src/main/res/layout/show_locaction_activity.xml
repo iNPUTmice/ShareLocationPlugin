@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
     <fragment
-
-        android:name="com.google.android.gms.maps.MapFragment"
+        android:name="eu.siacs.conversations.sharelocation.MapFragment_"
         android:id="@+id/map_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        map:mapType="normal"
-        map:uiCompass="false"
-        map:uiRotateGestures="false"
-        map:uiScrollGestures="true"
-        map:uiTiltGestures="false"
-        map:uiZoomControls="false"
-        map:uiZoomGestures="true"
         tools:ignore="MissingPrefix"/>
 
 </RelativeLayout>

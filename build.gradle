@@ -37,6 +37,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:6.5.87'
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile 'org.osmdroid:osmdroid-android:5.1@aar'
 }
 
 apt {

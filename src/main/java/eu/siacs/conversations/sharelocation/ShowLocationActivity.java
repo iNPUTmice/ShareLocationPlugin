@@ -4,27 +4,25 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 
 @EActivity(R.layout.show_locaction_activity)
-public class ShowLocationActivity extends Activity implements OnMapReadyCallback {
-
-	private GoogleMap mGoogleMap;
-	private LatLng mLocation;
-	private String mLocationName;
-
+public class ShowLocationActivity extends Activity {
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
+
+	@Extra("name")
+	String locationName;
+
+	@Extra
+	double latitude;
+
+	@Extra
+	double longitude;
 
 	@AfterViews
 	void init() {
@@ -33,7 +31,8 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 
-		mapFragment.getMapAsync(this);
+		mapFragment.showLocation(true);
+		updateMapMarker();
 	}
 
 	 @Override
@@ -43,40 +42,24 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 	 }
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		Intent intent = getIntent();
-
-		this.mLocationName = intent != null ? intent.getStringExtra("name") : null;
-
-		if (intent != null && intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
-			double longitude = intent.getDoubleExtra("longitude",0);
-			double latitude = intent.getDoubleExtra("latitude",0);
-			this.mLocation = new LatLng(latitude,longitude);
-			if (this.mGoogleMap != null) {
-				markAndCenterOnLocation(this.mLocation, this.mLocationName);
-			}
-		}
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);	// inject new values to the variables
+		updateMapMarker();
+	}
+	private void updateMapMarker() {
+		markAndCenterOnLocation(latitude, longitude, locationName);
 	}
 
-	@Override
-	public void onMapReady(GoogleMap googleMap) {
-		this.mGoogleMap = googleMap;
-		this.mGoogleMap.setMyLocationEnabled(true);
-		if (this.mLocation != null) {
-			this.markAndCenterOnLocation(this.mLocation,this.mLocationName);
-		}
+	private void markAndCenterOnLocation(double latitude, double longitude, String name) {
+		mapFragment.moveTo(latitude, longitude, Config.DEFAULT_ZOOM)
+				.clearMarkers()
+				.addMarker(
+						Marker.builder()
+								.latitude(latitude)
+								.longitude(longitude)
+								.title(name)
+								.build()
+				);
 	}
-
-	private void markAndCenterOnLocation(LatLng location, String name) {
-		this.mGoogleMap.clear();
-		MarkerOptions options = new MarkerOptions();
-		options.position(location);
-		if (name != null) {
-			options.title(name);
-		}
-		this.mGoogleMap.addMarker(options);
-		this.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, Config.DEFAULT_ZOOM));
-	}
-
 }
