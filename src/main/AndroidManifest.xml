@@ -22,7 +22,7 @@
             android:value="@string/google_maps_api_key" />
 
         <activity
-            android:name=".ShareLocationActivity"
+            android:name=".ShareLocationActivity_"
             android:label="@string/share_location" >
             <intent-filter>
                 <action android:name="eu.siacs.conversations.location.request" />

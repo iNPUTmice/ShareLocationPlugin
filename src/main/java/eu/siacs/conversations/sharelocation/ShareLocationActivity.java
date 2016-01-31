@@ -1,13 +1,9 @@
 package eu.siacs.conversations.sharelocation;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -24,6 +20,13 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.ViewById;
+
+@EActivity(R.layout.share_locaction_activity)
 public class ShareLocationActivity extends Activity implements OnMapReadyCallback,
 		GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener,
@@ -31,54 +34,47 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 
 	private GoogleMap mGoogleMap;
 	private GoogleApiClient mGoogleApiClient;
-	private LocationRequest mLocationRequest;
 	private Location mLastLocation;
-	private Button mCancelButton;
-	private Button mShareButton;
-	private RelativeLayout mSnackbar;
+	@ViewById(R.id.share_button)
+	Button mShareButton;
+	@ViewById(R.id.snackbar)
+	RelativeLayout mSnackbar;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.share_locaction_activity);
-		MapFragment fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
-		fragment.getMapAsync(this);
+	@FragmentById(R.id.map_fragment)
+	MapFragment mapFragment;
+
+	@AfterViews
+	void init() {
+		mapFragment.getMapAsync(this);
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addApi(LocationServices.API)
 				.addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this)
 				.build();
-		mCancelButton = (Button) findViewById(R.id.cancel_button);
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				setResult(RESULT_CANCELED);
-				finish();
-			}
-		});
-		mShareButton = (Button) findViewById(R.id.share_button);
-		mShareButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (mLastLocation != null) {
-					Intent result = new Intent();
-					result.putExtra("latitude",mLastLocation.getLatitude());
-					result.putExtra("longitude",mLastLocation.getLongitude());
-					result.putExtra("altitude",mLastLocation.getAltitude());
-					result.putExtra("accuracy",(int) mLastLocation.getAccuracy());
-					setResult(RESULT_OK, result);
-					finish();
-				}
-			}
-		});
-		mSnackbar = (RelativeLayout) findViewById(R.id.snackbar);
-		TextView snackbarAction = (TextView) findViewById(R.id.snackbar_action);
-		snackbarAction.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-			}
-		});
+	}
+
+	@Click(R.id.cancel_button)
+	void cancel() {
+		setResult(RESULT_CANCELED);
+		finish();
+	}
+
+	@Click(R.id.share_button)
+	void share() {
+		if (mLastLocation != null) {
+			Intent result = new Intent();
+			result.putExtra("latitude",mLastLocation.getLatitude());
+			result.putExtra("longitude",mLastLocation.getLongitude());
+			result.putExtra("altitude",mLastLocation.getAltitude());
+			result.putExtra("accuracy",(int) mLastLocation.getAccuracy());
+			setResult(RESULT_OK, result);
+			finish();
+		}
+	}
+
+	@Click(R.id.snackbar_action)
+	void locationSettings() {
+		startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 	}
 
 	@Override
@@ -114,11 +110,13 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 
 	@Override
 	public void onConnected(Bundle bundle) {
-		mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000);
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+				mGoogleApiClient,
+				LocationRequest.create()
+						.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+						.setInterval(1000),
+				this
+		);
 	}
 
 	@Override
