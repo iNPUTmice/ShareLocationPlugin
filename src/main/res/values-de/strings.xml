@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="missingTranslations,unusedResources,emptyStrings">
     <string name="share_location_plugin">Standort-Freigabe Plugin</string>
     <string name="share_location">Standort freigeben</string>
     <string name="share">Freigeben</string>
@@ -12,4 +13,8 @@
     <string name="permission_storage_reason">Die Karte wird auf Ihrem Gerätespeicher zwischengespeichert</string>
 
     <string name="show_own_location">Meinen Standort auch anzeigen</string>
+
+    <string name="about">Über</string>
+
+    <string name="app_description">Erweiterung für Conversations um den Standort zu senden</string>
 </resources>

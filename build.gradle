@@ -41,6 +41,9 @@ dependencies {
     compile 'org.osmdroid:osmdroid-android:5.1@aar'
     compile 'com.mikepenz:iconics-core:2.5.5@aar'
     compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
+    compile('com.mikepenz:aboutlibraries:5.5.0@aar') {
+        transitive = true
+    }
 }
 
 apt {

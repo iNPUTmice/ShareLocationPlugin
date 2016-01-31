@@ -6,6 +6,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
+
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+
+@EActivity
+@OptionsMenu(R.menu.base)
 public abstract class BaseActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUIRED_REQUEST_CODE = 123;
     public static final int PERMISSION_REQUESTED_REQUEST_CODE = 124;
@@ -59,5 +68,13 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public void onGotRequiredPermissions() {
 
+    }
+
+    @OptionsItem
+    public void about() {
+        new LibsBuilder()
+                .withFields(R.string.class.getFields())
+                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .start(this);
     }
 }

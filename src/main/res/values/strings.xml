@@ -12,4 +12,8 @@
     <string name="permission_storage_reason">The map tiles are cached on your storage</string>
 
     <string name="show_own_location">Show my current location too</string>
+
+    <string name="about">About</string>
+
+    <string name="app_description">Plugin for Conversations to share your location</string>
 </resources>
