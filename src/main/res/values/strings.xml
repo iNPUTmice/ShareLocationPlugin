@@ -3,11 +3,9 @@
 
     <string name="share_location_plugin">Share Location Plugin</string>
     <string name="share_location">Share Location</string>
-    <string name="cancel">Cancel</string>
     <string name="share">Share</string>
     <string name="locating">Locating&#8230;</string>
     <string name="show_location">Show location</string>
-    <string name="location_sharing_disabled">Location sharing is disabled in settings</string>
     <string name="enable">Enable</string>
 
     <string name="permission_location_reason">Your location is used to share it (if you decide to) and to show it on the map</string>

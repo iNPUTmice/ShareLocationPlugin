@@ -28,9 +28,9 @@ public abstract class LocationUtil {
     }
 
     public static boolean isLocationEnabled(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return isLocationEnabledKitkat(context);
-        }else{
+        } else {
             return isLocationEnabledLegacy(context);
         }
     }

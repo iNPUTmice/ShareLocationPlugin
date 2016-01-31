@@ -14,5 +14,6 @@
     <color name="red">#ffe51c23</color>
     <color name="orange">#ffff9800</color>
     <color name="green">#ff259b24</color>
+    <color name="icon">#55000000</color>
 
 </resources>

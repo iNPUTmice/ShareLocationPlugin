@@ -1,106 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/primarybackground">
-    <fragment
-        android:name="eu.siacs.conversations.sharelocation.MapFragment_"
-        android:id="@+id/map_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/snackbar"
-        tools:ignore="MissingPrefix"/>
+<ViewSwitcher
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/switcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/snackbar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_above="@+id/button_bar"
-        android:background="@drawable/snackbar"
-        android:minHeight="48dp"
-        android:visibility="visible" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/snackbar_action"
-            android:paddingLeft="24dp"
-            android:textColor="@color/ondarktext"
-            android:textSize="?attr/TextSizeBody"
-            android:text="@string/location_sharing_disabled"/>
-
-        <TextView
-            android:id="@+id/snackbar_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="16dp"
-            android:textAllCaps="true"
-            android:textColor="@color/ondarktext"
-            android:textSize="?attr/TextSizeBody"
-            android:textStyle="bold"
-            android:text="@string/enable"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/button_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/icon"
+            app:iiv_color="@color/icon"
+            android:layout_margin="@dimen/icon_padding"
+            android:layout_above="@+id/enable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <Button
-            android:id="@+id/cancel_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel"
-            android:textColor="@color/primarytext" />
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            android:text="@string/enable"
+            android:id="@+id/enable"
+            android:layout_marginBottom="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:layout_marginBottom="7dp"
-            android:layout_marginTop="7dp"
-            android:background="@color/divider" />
+    </RelativeLayout>
 
-        <ViewSwitcher
-            android:id="@+id/share_switcher"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content">
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/share_button_disabled"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="@string/locating"
-                android:textColor="@color/secondarytext" />
+        <fragment
+            android:name="eu.siacs.conversations.sharelocation.MapFragment_"
+            android:id="@+id/map_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/snackbar"
+            tools:ignore="MissingPrefix"/>
 
-            <Button
-                android:id="@+id/share_button"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/share"
-                android:textColor="@color/primarytext" />
+        <android.support.design.widget.FloatingActionButton
+            android:contentDescription="@string/share"
+            android:id="@+id/share"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        </ViewSwitcher>
-    </LinearLayout>
-</RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</ViewSwitcher>

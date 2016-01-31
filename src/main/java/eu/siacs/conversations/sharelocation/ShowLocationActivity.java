@@ -1,10 +1,10 @@
 package eu.siacs.conversations.sharelocation;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ViewSwitcher;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -16,6 +16,9 @@ import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.show_locaction_activity)
 public class ShowLocationActivity extends BaseLocationActivity {
+	private static final int LOADING = 0;
+	private static final int MAP = 1;
+
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
 
@@ -31,19 +34,24 @@ public class ShowLocationActivity extends BaseLocationActivity {
 	@ViewById
 	Button showOwnLocation;
 
+	@ViewById
+	ViewSwitcher switcher;
+
 	@AfterViews
 	void init() {
 		requirePermissions(new String[]{
 				Manifest.permission.WRITE_EXTERNAL_STORAGE
 		});
 
-		ActionBar actionBar = getActionBar();
-		if (actionBar != null) {
-			actionBar.setDisplayHomeAsUpEnabled(true);
-		}
-
 		mapFragment.showLocation(true);
 		updateMapMarker();
+	}
+
+	@Override
+	public void onGotRequiredPermissions() {
+		super.onGotRequiredPermissions();
+
+		switcher.setDisplayedChild(MAP);
 	}
 
 	@Override

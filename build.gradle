@@ -35,9 +35,12 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'org.osmdroid:osmdroid-android:5.1@aar'
+    compile 'com.mikepenz:iconics-core:2.5.5@aar'
+    compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
 }
 
 apt {

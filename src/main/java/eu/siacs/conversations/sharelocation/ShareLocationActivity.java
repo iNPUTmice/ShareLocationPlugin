@@ -2,10 +2,16 @@ package eu.siacs.conversations.sharelocation;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.Button;
 import android.widget.ViewSwitcher;
+
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.view.IconicsImageView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -17,16 +23,23 @@ import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
 @EActivity(R.layout.share_locaction_activity)
 public class ShareLocationActivity extends BaseLocationActivity {
-	private static final int LOCATING = 0;
-	private static final int SHARE = 1;
+	private static final int SEARCHING = 0;
+	private static final int MAP = 1;
 
-	@ViewById(R.id.snackbar)
-	RelativeLayout mSnackbar;
 	@ViewById
-	ViewSwitcher shareSwitcher;
+	FloatingActionButton share;
 
 	@FragmentById(R.id.map_fragment)
 	MapFragment mapFragment;
+
+	@ViewById
+	IconicsImageView icon;
+
+	@ViewById
+	Button enable;
+
+	@ViewById
+	ViewSwitcher switcher;
 
 	@AfterViews
 	void init() {
@@ -36,15 +49,16 @@ public class ShareLocationActivity extends BaseLocationActivity {
 		});
 
 		mapFragment.showLocation(true);
+
+		share.setImageDrawable(
+				new IconicsDrawable(this)
+						.icon(GoogleMaterial.Icon.gmd_send)
+						.color(Color.WHITE)
+						.sizeDp(24)
+		);
 	}
 
-	@Click(R.id.cancel_button)
-	void cancel() {
-		setResult(RESULT_CANCELED);
-		finish();
-	}
-
-	@Click(R.id.share_button)
+	@Click
 	void share() {
 		Location lastLocation = locationProvider.getLastKnownLocation();
 
@@ -59,8 +73,8 @@ public class ShareLocationActivity extends BaseLocationActivity {
 		}
 	}
 
-	@Click(R.id.snackbar_action)
-	void locationSettings() {
+	@Click
+	void enable() {
 		startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 	}
 
@@ -68,13 +82,9 @@ public class ShareLocationActivity extends BaseLocationActivity {
 	protected void onResume() {
 		super.onResume();
 
-		if (LocationUtil.isLocationEnabled(this)) {
-			this.mSnackbar.setVisibility(View.GONE);
-		} else {
-			this.mSnackbar.setVisibility(View.VISIBLE);
-		}
-
-		shareSwitcher.setDisplayedChild(LOCATING);
+		icon.setIcon(LocationUtil.isLocationEnabled(this) ? GoogleMaterial.Icon.gmd_location_searching : GoogleMaterial.Icon.gmd_location_disabled);
+		enable.setVisibility(LocationUtil.isLocationEnabled(this) ? View.GONE : View.VISIBLE);
+		switcher.setDisplayedChild(SEARCHING);
 	}
 
 	private void centerOnLocation(Location location) {
@@ -87,6 +97,10 @@ public class ShareLocationActivity extends BaseLocationActivity {
 		super.onLocationChanged(location, locationProvider);
 
 		centerOnLocation(location);
-		shareSwitcher.setDisplayedChild(SHARE);
+
+		if(Permissions.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			// only show the map if we got the required permission
+			switcher.setDisplayedChild(MAP);
+		}
 	}
 }

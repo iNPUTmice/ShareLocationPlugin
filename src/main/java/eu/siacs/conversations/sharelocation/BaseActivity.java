@@ -3,10 +3,10 @@ package eu.siacs.conversations.sharelocation;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-public abstract class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUIRED_REQUEST_CODE = 123;
     public static final int PERMISSION_REQUESTED_REQUEST_CODE = 124;
 
@@ -33,6 +33,8 @@ public abstract class BaseActivity extends FragmentActivity {
             } else {
                 ActivityCompat.requestPermissions(this, missing, requestCode);
             }
+        } else {
+            onGotRequiredPermissions();
         }
     }
 
@@ -45,8 +47,17 @@ public abstract class BaseActivity extends FragmentActivity {
                     return;
                 }
             }
+
+            onGotRequiredPermissions();
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    /**
+     * Called when the permissions requested with requirePermissions are granted
+     */
+    public void onGotRequiredPermissions() {
+
     }
 }
