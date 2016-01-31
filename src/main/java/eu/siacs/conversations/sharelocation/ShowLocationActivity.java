@@ -3,17 +3,7 @@ package eu.siacs.conversations.sharelocation;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -21,35 +11,36 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.OptionsItem;
+
+@EActivity(R.layout.show_locaction_activity)
 public class ShowLocationActivity extends Activity implements OnMapReadyCallback {
 
 	private GoogleMap mGoogleMap;
 	private LatLng mLocation;
 	private String mLocationName;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	@FragmentById(R.id.map_fragment)
+	MapFragment mapFragment;
 
+	@AfterViews
+	void init() {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 
-		setContentView(R.layout.show_locaction_activity);
-		MapFragment fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
-		fragment.getMapAsync(this);
+		mapFragment.getMapAsync(this);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	 @Override
+	 @OptionsItem(android.R.id.home)
+	 public void finish() {
+		 super.finish();
+	 }
 
 	@Override
 	protected void onResume() {
@@ -66,11 +57,6 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 				markAndCenterOnLocation(this.mLocation, this.mLocationName);
 			}
 		}
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
 	}
 
 	@Override

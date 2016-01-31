@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".ShowLocationActivity"
+            android:name=".ShowLocationActivity_"
             android:label="@string/show_location" >
             <intent-filter>
                 <action android:name="eu.siacs.conversations.location.show" />
