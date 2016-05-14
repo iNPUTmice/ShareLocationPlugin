@@ -3,6 +3,8 @@ package eu.siacs.conversations.sharelocation;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,9 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
+import java.util.Locale;
+
 public class ShareLocationActivity extends Activity implements OnMapReadyCallback,
 		GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener,
@@ -36,6 +41,7 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 	private Button mCancelButton;
 	private Button mShareButton;
 	private RelativeLayout mSnackbar;
+    private RelativeLayout mLocationInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,11 +139,37 @@ public class ShareLocationActivity extends Activity implements OnMapReadyCallbac
 
 	@Override
 	public void onLocationChanged(Location location) {
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+        if (latitude != 0 && longitude != 0) {
+            Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = geoCoder.getFromLocation(latitude, longitude, 1);
+
+                String address = "";
+                if (addresses != null) {
+                    Address Address = addresses.get(0);
+                    StringBuilder strAddress = new StringBuilder("");
+
+                    for (int i = 0; i < Address.getMaxAddressLineIndex(); i++) {
+                        strAddress.append(Address.getAddressLine(i)).append("\n");
+                    }
+                    address = strAddress.toString();
+                    address = address.substring(0, address.length()-1); //trim last \n
+                    mLocationInfo = (RelativeLayout) findViewById(R.id.location);
+                    TextView snackbarLocation = (TextView) findViewById(R.id.snackbar_message);
+                    snackbarLocation.setText(address);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 		if (this.mLastLocation == null) {
 			centerOnLocation(new LatLng(location.getLatitude(), location.getLongitude()));
 			this.mShareButton.setEnabled(true);
 			this.mShareButton.setTextColor(0xde000000);
 			this.mShareButton.setText(R.string.share);
+            mLocationInfo.setVisibility(View.VISIBLE);
 		}
 		this.mLastLocation = location;
 	}
