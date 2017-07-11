@@ -88,8 +88,10 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 		options.position(location);
 		if (name != null) {
 			options.title(name);
+			this.mGoogleMap.addMarker(options).showInfoWindow();
+		} else {
+			this.mGoogleMap.addMarker(options);
 		}
-		this.mGoogleMap.addMarker(options);
 		this.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, Config.DEFAULT_ZOOM));
 	}
 

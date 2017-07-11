@@ -2,6 +2,8 @@
 *.swp
 .settings
 
+gradle.properties
+
 src/main/res/values/keys.xml
 
 # https://github.com/github/gitignore/blob/master/Gradle.gitignore
