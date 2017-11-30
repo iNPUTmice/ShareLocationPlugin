@@ -1,17 +1,17 @@
 buildscript {
-	repositories {
-		jcenter()
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:2.3.0'
-	}
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+    }
 }
 allprojects {
-	repositories {
-		jcenter()
-		mavenCentral()
-	}
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
 }
 
 apply plugin: 'com.android.application'
@@ -24,9 +24,20 @@ android {
         applicationId "eu.siacs.conversations.sharelocation"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 3
-        versionName "0.1.2"
+        versionCode 4
+        versionName "0.1.3"
+        archivesBaseName += "-$versionName"
     }
+
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
 
     if (project.hasProperty('mStoreFile') &&
             project.hasProperty('mStorePassword') &&
@@ -50,6 +61,6 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.google.android.gms:play-services-maps:11.0.2'
-    compile 'com.google.android.gms:play-services-location:11.0.2'
+    compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.google.android.gms:play-services-location:11.0.4'
 }
