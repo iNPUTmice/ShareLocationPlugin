@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="action_copy_location">Copy Location</string>
+    <string name="action_share_location">Share Location</string>
     <string name="share_location_plugin">Share Location Plugin</string>
     <string name="share_location">Share Location</string>
     <string name="cancel">Cancel</string>

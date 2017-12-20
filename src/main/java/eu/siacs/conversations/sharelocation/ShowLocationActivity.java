@@ -2,18 +2,14 @@ package eu.siacs.conversations.sharelocation;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ShareActionProvider;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,6 +22,7 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 	private GoogleMap mGoogleMap;
 	private LatLng mLocation;
 	private String mLocationName;
+	private ShareActionProvider mShareActionProvider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +38,39 @@ public class ShowLocationActivity extends Activity implements OnMapReadyCallback
 		fragment.getMapAsync(this);
 	}
 
+	public static String createGeoUri(final LatLng location) {
+		return "geo:" + location.latitude + "," + location.longitude;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.show_location, menu);
+
+		final MenuItem item = menu.findItem(R.id.action_share_location);
+		if (item.getActionProvider() != null) {
+			this.mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+			final Intent shareIntent = new Intent();
+			shareIntent.setAction(Intent.ACTION_SEND);
+			shareIntent.putExtra(Intent.EXTRA_TEXT, createGeoUri(mLocation));
+			shareIntent.setType("text/plain");
+
+			mShareActionProvider.setShareIntent(shareIntent);
+		}
+
+		return true;
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				finish();
+				return true;
+			case R.id.action_copy_location:
+				ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("location", createGeoUri(mLocation));
+				clipboard.setPrimaryClip(clip);
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
