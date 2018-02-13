@@ -23,7 +23,8 @@
 
         <activity
             android:name=".ShareLocationActivity"
-            android:label="@string/share_location" >
+            android:label="@string/share_location"
+			android:theme="@android:style/Theme.NoDisplay"	>
             <intent-filter>
                 <action android:name="eu.siacs.conversations.location.request" />
                 <category android:name="android.intent.category.DEFAULT" />
